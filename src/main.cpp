@@ -41,7 +41,6 @@ int main()
   Lacze.DodajNazwePliku("../bryly/Woda.dat");
   Lacze.DodajNazwePliku("../bryly/Ziemia.dat");
   Lacze.DodajNazwePliku("../bryly/scena.dat");
-  Lacze.DodajNazwePliku("../bryly/chuj.dat");
   Lacze.Rysuj(); 
   char menu='0';
   Brylageometryczna dronglobalny=dron;    // Teraz powinno pojawic sie okienko gnuplota
