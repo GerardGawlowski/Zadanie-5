@@ -19,6 +19,7 @@ int main()
 {
   PzG::LaczeDoGNUPlota  Lacze;
   char c;
+  vector<char> kolejnosc;
   vector<char> osieobrotu;
   vector<double> wartosciobrotu;
   vector<double> przemieszczenie;
@@ -46,9 +47,11 @@ int main()
   Brylageometryczna dronglobalny=dron;    // Teraz powinno pojawic sie okienko gnuplota
   while (menu!='q')
   {
-    dronglobalny=Master(dron,osieobrotu,wartosciobrotu,przemieszczenie);
+    dronglobalny=Master(dron,kolejnosc,osieobrotu,wartosciobrotu,przemieszczenie);
     zapiszdopliku(dronglobalny,pliksceny);
     Lacze.Rysuj();
+    Wektor3D sprawdz = srodekbryly(dronglobalny);
+    cout << "srodek bryly :" <<sprawdz.getWektor() << endl;
     cout << "Sterowanie dronem" << endl;
     cout << "o - obrót drona" << endl;
     cout << "r - ruch do przodu" << endl;
@@ -57,6 +60,7 @@ int main()
     switch(menu)
     {
       case 'o':
+      kolejnosc.push_back('o');
       char obrot;
       double stopnie;
       cout << "W jakiej osi?";
@@ -86,6 +90,7 @@ int main()
       break;
 
       case 'r':
+      kolejnosc.push_back('r');
       double temp;
       cout << "Podaj odległość:";
       cin >> temp;
