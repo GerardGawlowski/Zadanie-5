@@ -12,6 +12,7 @@
 #include "../inc/lamana.hh"
 #include "../inc/Wektor3D.hh"
 #include "../inc/Bryla.hh"
+#include "../inc/Dron.hh"
 using namespace std;
 
 
@@ -19,14 +20,18 @@ int main()
 {
   PzG::LaczeDoGNUPlota  Lacze;
   char c;
+  vector<char> kolejnosc;
   vector<char> osieobrotu;
   vector<double> wartosciobrotu;
   vector<double> przemieszczenie;
+  Dron dronik;
   Brylageometryczna dron;
   const char* pliksceny;
   pliksceny = "../bryly/scena.dat";
-  dron=odczytdrona();
-  zapiszdopliku(dron,pliksceny);
+  dron=odczytdrona("../bryly/dron.dat");
+  Brylageometryczna wirnik=odczytdrona("../bryly/Wirnik.dat");
+  dronik.addbryla(dron);
+  dronik.addbryla(wirnik);
   stworzpowierzchnie("../bryly/Woda.dat",90);
   stworzpowierzchnie("../bryly/Ziemia.dat", -80 );
   Lacze.ZmienTrybRys(PzG::TR_3D);
@@ -41,12 +46,12 @@ int main()
   Lacze.DodajNazwePliku("../bryly/Woda.dat");
   Lacze.DodajNazwePliku("../bryly/Ziemia.dat");
   Lacze.DodajNazwePliku("../bryly/scena.dat");
-  Lacze.Rysuj(); 
   char menu='0';
-  Brylageometryczna dronglobalny=dron;    // Teraz powinno pojawic sie okienko gnuplota
+  Dron dronglobalny;
+      // Teraz powinno pojawic sie okienko gnuplota
   while (menu!='q')
   {
-    dronglobalny=Master(dron,osieobrotu,wartosciobrotu,przemieszczenie);
+    dronglobalny=Master(dronik,kolejnosc,osieobrotu,wartosciobrotu,przemieszczenie);
     zapiszdopliku(dronglobalny,pliksceny);
     Lacze.Rysuj();
     cout << "Sterowanie dronem" << endl;
@@ -57,6 +62,7 @@ int main()
     switch(menu)
     {
       case 'o':
+      kolejnosc.push_back('o');
       char obrot;
       double stopnie;
       cout << "W jakiej osi?";
@@ -86,6 +92,7 @@ int main()
       break;
 
       case 'r':
+      kolejnosc.push_back('r');
       double temp;
       cout << "Podaj odległość:";
       cin >> temp;

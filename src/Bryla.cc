@@ -10,14 +10,14 @@
 #include <string>
 #include <math.h>
 using namespace std;
-Brylageometryczna odczytdrona ()
+Brylageometryczna odczytdrona (const char * plik)
 {
     int i=1;
     Wektor3D wektortrzyde;
     Lamana lamana;
     Brylageometryczna dronik;
     ifstream dron;
-    dron.open ("../bryly/dron.dat");
+    dron.open (plik);
     Wektor<double,3> nowy;
     double a,b,c;
     while(dron >> a >> b >> c)
@@ -40,24 +40,7 @@ Brylageometryczna odczytdrona ()
     return dronik;
 }
 
-void zapiszdopliku(Brylageometryczna bryla,const char* plik)
-{
-    ofstream scena;
-    scena.open (plik);
-    vector<Lamana> temp=bryla.getvektor();
-    for(int i=0; i < temp.size(); i++)
-    {
-         Lamana wpetli= temp[i];
-        vector<Wektor3D> temporary=wpetli.getvektor();
-        for (int j=0; j< temporary.size();j++)
-        {
-            Wektor3D wektortrzyde=temporary[j];
-            scena << wektortrzyde.getWektor();
-            scena << endl;
-        }
-        scena << endl;
-    }
-}
+
 
 void stworzpowierzchnie(const char* plik, double wysokosc)          
 {
@@ -141,7 +124,6 @@ Brylageometryczna RotacjadronaZ(Brylageometryczna bryla, double katobrotu)
     Brylageometryczna dron = bryla;
     Wektor3D T;
     T.setWektor(poczatek.getWektor()-(obrot*poczatek.getWektor()));
-    cout << T.getWektor();
     dron=transformacjaowektor(dron,T);
 return dron;
 }
@@ -187,10 +169,8 @@ Brylageometryczna RotacjadronaX(Brylageometryczna bryla, double katobrotu)
     }
      bryla.setvector(temp);
     Brylageometryczna dron = bryla;
-    Wektor3D koniec=srodekbryly(dron);
     Wektor3D T;
     T.setWektor(poczatek.getWektor()-(obrot*poczatek.getWektor()));
-    cout << T.getWektor();
     dron=transformacjaowektor(dron,T);
     return dron;
 }
@@ -236,11 +216,8 @@ Brylageometryczna RotacjadronaY(Brylageometryczna bryla, double katobrotu)
     }
     bryla.setvector(temp);              
     Brylageometryczna dron = bryla;
-    Wektor3D koniec=srodekbryly(dron);
-    cout << koniec.getWektor();
     Wektor3D T;
     T.setWektor(poczatek.getWektor()-(obrot*poczatek.getWektor()));
-    cout << T.getWektor();
     dron=transformacjaowektor(dron,T);
 return dron;
 }
@@ -280,7 +257,7 @@ Wektor3D srodekbryly(Brylageometryczna bryla)
         minz=0;
         miny=0;
         minx=0;
-    int i=1;
+   
     Wektor3D wektortrzyde;
     Wektor<double,3> nowy;
     double a,b,c;
@@ -310,23 +287,23 @@ Wektor3D srodekbryly(Brylageometryczna bryla)
         {
             maksx=a;
         }
-        if(a<minx)
+        else if(a<minx)
         {
             minx=a;
         }
-        if(b>maksy)
+        else if(b>maksy)
         {
             maksy=b;
         }
-        if(b<maksy)
+        else if(b<miny)
         {
             miny=b;
         }
-        if(c>maksz)
+        else if(c>maksz)
         {
             maksz=c;
         }
-        if(c<minz)
+        else if(c<minz)
         {
             minz=c;
         } 
@@ -341,35 +318,30 @@ wynik.setWektor(nowy);
     return wynik;
 }
 
-Wektor3D znajdzwektor(vector<char> osie, vector<double>wartosci, double odleglosc)
+Wektor3D znajdzwektor(vector<char> osie, vector<double>wartosci, double odleglosc,double oile)
 {
-    Wektor3D wynik;
     Wektor3D doprzodu;
     Wektor<double,3> przod;
     przod.setSkladowa(0,0);
     przod.setSkladowa(1,odleglosc);
     przod.setSkladowa(2,0);
     doprzodu.setWektor(przod);
-    for (int i=0; i<osie.size();i++)
+    for (int i=0; i<oile;i++)
     {
         if(osie[i]=='x')
         {
-            wynik=RotacjawektoraX(doprzodu, wartosci[i]);
+            doprzodu=RotacjawektoraX(doprzodu, wartosci[i]);
         }
-        if(osie[i]=='y')
+        else if(osie[i]=='y')
         {
-            wynik=RotacjawektoraY(doprzodu,wartosci[i]);
+            doprzodu=RotacjawektoraY(doprzodu,wartosci[i]);
         }
-        if(osie[i]=='z')
+        else if(osie[i]=='z')
         {
-            wynik=RotacjawektoraZ(doprzodu,wartosci[i]);
+            doprzodu=RotacjawektoraZ(doprzodu,wartosci[i]);
         }
     }
-    if(osie.size()==0)
-    {
-        return doprzodu;
-    }
-    return wynik;
+    return doprzodu;
 }
 
 Wektor3D RotacjawektoraZ(Wektor3D wektor, double katobrotu)
@@ -447,29 +419,24 @@ Wektor3D RotacjawektoraY(Wektor3D wektor, double katobrotu)
     return wynik;
 }
 
-Brylageometryczna Master(Brylageometryczna dron,std::vector<char> osie, std::vector<double> wartosci, std::vector<double> przemieszczenie)
+Wektor3D znajdzwektor3D(vector<char> osie, vector<double>wartosci, Wektor3D trzyde,double oile)
 {
-    
-    for (int i=0; i<osie.size();i++)
+    Wektor3D doprzodu=trzyde;
+    Wektor<double,3> przod;
+    for (int i=0; i<oile;i++)
     {
         if(osie[i]=='x')
         {
-            dron=RotacjadronaX(dron, wartosci[i]);
+            doprzodu=RotacjawektoraX(doprzodu, wartosci[i]);
         }
-        if(osie[i]=='y')
+        else if(osie[i]=='y')
         {
-            dron=RotacjadronaY(dron,wartosci[i]);
+            doprzodu=RotacjawektoraY(doprzodu,wartosci[i]);
         }
-        if(osie[i]=='z')
+        else if(osie[i]=='z')
         {
-            dron=RotacjadronaZ(dron,wartosci[i]);
+            doprzodu=RotacjawektoraZ(doprzodu,wartosci[i]);
         }
     }
-    for (int i=0;i<przemieszczenie.size();i++)
-    {
-    Wektor3D p;
-    p=znajdzwektor(osie,wartosci,przemieszczenie[i]);
-    dron=transformacjaowektor(dron,p);
-    }
-    return dron;
+    return doprzodu;
 }
