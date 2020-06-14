@@ -122,7 +122,37 @@ Wektor<xD,ROZMIAR> IloczynWR3(Wektor<xD,ROZMIAR> wk1, Wektor<xD,ROZMIAR> wk2)
     return Wynik;
 }
 
+template <typename xD, int ROZMIAR>
+double Czywektorysarowne(Wektor<xD,ROZMIAR> wk1, Wektor<xD,ROZMIAR> wk2)
+{
+    xD a1=wk1.getSkladowa(0);
+    xD a2=wk1.getSkladowa(1);
+    xD a3=wk1.getSkladowa(2);
+    xD b1=wk2.getSkladowa(0);
+    xD b2=wk2.getSkladowa(1);
+    xD b3=wk2.getSkladowa(2);
+    if(a1==b1&&a2==b2&&a3==b3)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 
+template <typename xD, int ROZMIAR, typename T>
+Wektor<xD, ROZMIAR> operator / (Wektor<xD,ROZMIAR> wk1, T wk2)
+{
+    Wektor<xD,ROZMIAR> wynik;
+    for (int i = 0; i < ROZMIAR; i++)
+    {
+        xD a;
+        a = wk1.getSkladowa(i);
+        wynik.setSkladowa(i, a / wk2);
+    }
+    return wynik;
+}  
 
 
 
